@@ -1,0 +1,17 @@
+{
+  "name": "back-end",
+  "version": "1.0.0",
+  "description": "This is the backend of FinTrack web-application composed in node by typescript",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test",
+    "dev": "ts-node index.ts"
+  },
+  "author": "Mr Ninshuti Poli Ndiramiye",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  }
+}
