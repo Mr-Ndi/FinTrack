@@ -17,7 +17,30 @@ export const createUser = async (req: Request, res: Response): Promise<void> =>{
     try {
         const message = await userservice.registerUser(username, email, password)
         res.status(201).json({ message: "User created successfully." });
-    } catch (error: unknown) {
-        res.status(500).json({ error: error });
+    } catch (error: any) {
+      if (error.message === "Email is already in use.") {
+        res.status(409).json({ error: error.message }); // 409: Conflict
+      } else if (error.message === "Password must be at least 8 characters long.") {
+        res.status(400).json({ error: error.message }); // 400: Bad Request
+      } else if (error.message === "All fields (username, email, and password) are required.") {
+        res.status(400).json({ error: error.message }); // 400: Bad Request
+      } else {
+        res.status(500).json({ error: "Internal Server Error" }); // 500: Internal Server Error
+      };
     }
+};
+export const loginUser = async (req: Request, res: Response): Promise<void> => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    res.status(400).json({ error: "Email and password are required." });
+    return;
+  }
+
+  try {
+    const token = await userservice.authenticateUser(email, password);
+    res.status(200).json({ token });
+  } catch (error: unknown) {
+    res.status(401).json({ error: error });
+  }
 };

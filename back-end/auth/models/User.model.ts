@@ -41,4 +41,14 @@ export class UserModel {
       where: { email },
     });
   }
+
+  /**
+   * Verify a user's password against the hashed password.
+   * @param password - The raw password to verify.
+   * @param hashedPassword - The hashed password stored in the database.
+   * @returns A boolean indicating whether the password matches.
+   */
+  async verifyPassword(password: string, hashedPassword: string): Promise<boolean> {
+    return argon2.verify(hashedPassword, password);
+  }
 }
