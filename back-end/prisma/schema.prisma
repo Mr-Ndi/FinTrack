@@ -36,6 +36,7 @@ model Transaction {
   description   String?
   
   account       Account   @relation(fields: [accountId], references: [id])
+  category      Category[]
 }
 
 model Category {
