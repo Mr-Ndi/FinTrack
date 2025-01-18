@@ -25,8 +25,8 @@ export class TransactionModel {
         if (!account) {
             throw new Error('Sorry you don\'t have such account within your accounts')
         }
-        const categories = await prisma.category.findUnique({
-            where: { id: { in: categoryIds}},
+        const categories = await prisma.category.findMany({
+            where: { id: { in: categoryIds } },
         })
 
         if (categories.length !== categoryIds.length) {
@@ -51,8 +51,8 @@ export class TransactionModel {
         })
         console.log(`Transaction created successfully:`, transaction);
         return transaction;
-    } catch (error) {
-        console.error('Failed to create transaction:', error.message);
+    } catch (error:unknown) {
+        console.error('Failed to create transaction:', error);
         throw error;
     }
     finally{
