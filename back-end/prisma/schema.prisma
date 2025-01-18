@@ -3,58 +3,56 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" 
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  username  String   @unique
-  email     String   @unique
-  password  String
-  accounts  Account[]
-  budgets   Budget[]
+  id       Int       @id @default(autoincrement())
+  username String    @unique
+  email    String    @unique
+  password String
+  accounts Account[]
+  budgets  Budget[]
 }
 
 model Account {
-  id          Int       @id @default(autoincrement())
+  id          Int    @id @default(autoincrement())
   userId      Int
-  accountType String    // e.g., MobileMoney, BankAccount
-  balance     Float     @default(0)
-  
+  accountType String // e.g., MobileMoney, BankAccount
+  balance     Float  @default(0)
+
   transactions Transaction[]
-  
-  user        User      @relation(fields: [userId], references: [id])
+
+  user User @relation(fields: [userId], references: [id])
 }
 
 model Transaction {
-  id            Int      @id @default(autoincrement())
-  accountId     Int
-  amount        Float
+  id              Int      @id @default(autoincrement())
+  accountId       Int
+  amount          Float
   transactionDate DateTime @default(now())
-  
-  description   String?
-  
-  account       Account   @relation(fields: [accountId], references: [id])
-  category      Category[]
+
+  description String?
+
+  account  Account    @relation(fields: [accountId], references: [id])
+  category Category[]
 }
 
 model Category {
-  id          Int         @id @default(autoincrement())
-  name        String      @unique
-  categoryId  Int
-  category    Category    @relation(fields: [categoryId], references: [id])
-
-  
+  id         Int        @id @default(autoincrement())
+  name       String     @unique
+  parentId    Int?  
+  parent     Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children   Category[] @relation("CategoryHierarchy") 
   transactions Transaction[]
 }
 
 model Budget {
-  id          Int      @id @default(autoincrement())
-  userId      Int
-  categoryId  Int
-  amount      Float
-  
-  user        User      @relation(fields: [userId], references: [id])
-  
+  id         Int   @id @default(autoincrement())
+  userId     Int
+  categoryId Int
+  amount     Float
+
+  user User @relation(fields: [userId], references: [id])
 }
