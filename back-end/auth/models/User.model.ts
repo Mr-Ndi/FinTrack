@@ -30,4 +30,15 @@ export class UserModel {
       await prisma.$disconnect();
     }
   }
+
+  /**
+   * Find a user by email.
+   * @param email - The email to search for.
+   * @returns The user object if found, otherwise null.
+   */
+  async findUserByEmail(email: string) {
+    return prisma.user.findUnique({
+      where: { email },
+    });
+  }
 }
