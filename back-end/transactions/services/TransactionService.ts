@@ -1,5 +1,5 @@
 import { TransactionModel } from "../models/Transaction.model";
-
+import { validateDate } from "../middleware/TransactionMiddleware"
 const transaction = new TransactionModel();
 
 export class UserTransaction{
@@ -45,6 +45,9 @@ export class UserTransaction{
         begin: Date,
         end: Date
     ){
+        if ( !validateDate(begin) || !validateDate(end) ) {
+            throw new Error("Invalid date format. Please provide a valid date.");
+        }
         try {
             const history = await transaction.getTransactionsByDateRange(begin, end)
             console.log("Histoy obtained successfully !")
