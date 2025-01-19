@@ -81,10 +81,10 @@ export class AccountModel {
    * @returns A Promise that resolves to the deleted account object.
    * @throws Will throw an error if the account does not exist or if it has associated transactions.
    */
-  async deleteAccount(accountId: number) {
+  async deleteAccount(accountType: string) {
     try {
-      const account = await prisma.account.findUnique({
-        where: { id: accountId },
+      const account = await prisma.account.findFirst({
+        where: { accountType: accountType },
       });
 
       if (!account) {
@@ -92,7 +92,7 @@ export class AccountModel {
       }
 
       const deletedAccount = await prisma.account.delete({
-        where: { id: accountId },
+        where: { id: account.id },
       });
 
       console.log("Account deleted successfully:", deletedAccount);

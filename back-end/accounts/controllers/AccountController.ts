@@ -71,3 +71,33 @@ export const userAccounts = async (req: Request, res: Response): Promise<any> =>
       res.status(500).json({ message: "Internal server error." });
     }
   };
+
+
+/**
+ * Controller to a specified account for a logged-in user.
+ * It uses the JWT token from the request to authenticate account owner.
+ */
+export const deleteAccount = async(req: Request, res: Response): Promise<any> => {
+  const token = req.headers['authorization']
+  const accountType = req.body
+  
+  if (!token) {
+    return res.status(401).json({ message: "No authorization token provided." });
+  }
+
+  if (!accountType) {
+    res.status(401).json({
+      "message": "Account type to be deleted is required",
+      "status": 401
+    });
+  }
+  try {
+    const result = service.delete_Accounts(accountType)
+    res.status(200).json({
+      "message": "Account deletion is done",
+      "status": 200
+    });
+  } catch (error:any) {
+    console.log(`The Error occured ${error.message}`)
+  }
+}
