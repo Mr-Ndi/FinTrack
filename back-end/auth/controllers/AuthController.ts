@@ -19,13 +19,13 @@ export const createUser = async (req: Request, res: Response): Promise<void> =>{
         res.status(201).json({ message: "User created successfully." });
     } catch (error: any) {
       if (error.message === "Email is already in use.") {
-        res.status(409).json({ error: error.message }); // 409: Conflict
+        res.status(409).json({ error: error.message });
       } else if (error.message === "Password must be at least 8 characters long.") {
-        res.status(400).json({ error: error.message }); // 400: Bad Request
+        res.status(400).json({ error: error.message });
       } else if (error.message === "All fields (username, email, and password) are required.") {
-        res.status(400).json({ error: error.message }); // 400: Bad Request
+        res.status(400).json({ error: error.message });
       } else {
-        res.status(500).json({ error: "Internal Server Error" }); // 500: Internal Server Error
+        res.status(500).json({ error: "Internal Server Error" });
       };
     }
 };

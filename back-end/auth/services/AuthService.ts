@@ -1,6 +1,5 @@
 import { UserModel } from "../models/User.model";
 import jwt from "jsonwebtoken";
-import argon2 from "argon2";
 const userModel = new UserModel();
 
 export class UserService {
