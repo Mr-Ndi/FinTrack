@@ -47,7 +47,7 @@ model Category {
   parent       Category?     @relation("CategoryHierarchy", fields: [parentId], references: [id])
   children     Category[]    @relation("CategoryHierarchy")
   transactions Transaction[]
-  Budgets       Budget[]
+  budgets       Budget[]
 }
 
 model Budget {
