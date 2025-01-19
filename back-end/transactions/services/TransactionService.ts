@@ -25,7 +25,7 @@ export class UserTransaction{
             );
 
             console.log('Transaction created successfully:', createdTransaction);
-            return "Transaction created successfully";
+            return ("Transaction created successfully");
         } catch (error: unknown) {
             if (error instanceof Error) {
                 console.error('Error creating transaction:', error.message);
@@ -36,7 +36,7 @@ export class UserTransaction{
     }
 
      /**
-     * Creates a transaction based on provided parameters.
+     * Show creates a transaction on all accounts based providede date.
      * @param begin - The initial date for the summary
      * @param end - The end date for our repost
      */
@@ -51,13 +51,29 @@ export class UserTransaction{
         try {
             const history = await transaction.getTransactionsByDateRange(begin, end)
             console.log("Histoy obtained successfully !")
-            return ("Histoy obtained successfully !")
+            console.log ("Histoy obtained successfully !")
+            return history
         } catch (error: any) {
             if (error instanceof Error) {
                 console.error('Error getting transaction history:', error.message);
             } else {
                 console.error('An unknown error occurred:', error);
             }
+        }
+    }
+      /**
+     * Show created a transaction based on provided account type.
+     * @param accountType - The type of account to get its history either cash, momo or bank account
+     */
+
+    async accountHistory(accountType: string){
+        try {
+            const accountDescript = await transaction.getTransactionsOnAccount(accountType)
+            console.log("Account histoy obtained successfully !")
+            return (accountDescript)
+        } catch (error) {
+            console.error("Error fetching account history:", error);
+            return "An error occurred while fetching account history."; 
         }
     }
 }

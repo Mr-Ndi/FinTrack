@@ -53,7 +53,8 @@ export const report = async(req: Request, res: Response): Promise <void>=>{
             const message = await transaction.getHistory(initial, final)
             res.status(200).json({
                 "meaasge": "Historical report generated successfully",
-                "status": 200
+                "status": 200,
+                "datum": message
             })
         } catch (error: any) {
             console.error('Error getting transaction history:', error.message);
@@ -61,3 +62,32 @@ export const report = async(req: Request, res: Response): Promise <void>=>{
     }
 }
 
+export const AccountReport = async(req: Request, res:Response): Promise <void> =>{
+    const accountType = req.body;
+    const token = req.headers['authorization']
+
+    if (!accountType) {
+        res.status(400).json({
+            "message": "Account type required",
+            "status": 400
+        })
+    }
+
+    if(!token){
+        res.status(401).json({
+            "message": "Authorization token is required",
+            "status": 401
+        })
+    }
+
+    try {
+        const answer = await transaction.accountHistory(accountType)
+        res.status(200).json({
+            "message": "Historical report generated successfully",
+            "status": 200,
+            "datum": answer
+        })
+    } catch (error: any) {
+        console.error('Error getting transaction history:', error.message);
+    }
+}
