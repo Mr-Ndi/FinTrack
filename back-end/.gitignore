@@ -1,0 +1,22 @@
+# Node modules
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment variables
+.env
+
+# Build directories
+build/
+dist/
+
+# Coverage reports
+.nyc_output/
+coverage/
+
+# Other temporary files
+.DS_Store
+.grunt/
+.lock-wscript
