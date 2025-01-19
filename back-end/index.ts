@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-// import bodyParser from "body-parser"
+import morgan from "morgan"
 import cors from "cors"
 import userRoute from "./auth/routes/auth.routes"
 
@@ -8,6 +8,7 @@ const PORT = process.env.PORT || 5000
 
 app.use(express.json())
 app.use(cors());
+app.use(morgan('dev'))
 
 app.use("/fintracker",userRoute)
 
