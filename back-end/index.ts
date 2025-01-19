@@ -7,7 +7,14 @@ const app = express()
 const PORT = process.env.PORT || 5000
 
 app.use(express.json())
-app.use(cors());
+
+const corsOptions = {
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    optionsSuccessStatus: 204
+};
+app.use(cors(corsOptions));
 app.use(morgan('dev'))
 
 app.use("/fintracker",userRoute)

@@ -20,3 +20,4 @@ coverage/
 .DS_Store
 .grunt/
 .lock-wscript
+package-lock.json
