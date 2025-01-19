@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "../api/axios";
 
 const BudgetTracker = () => {
-    const [budget, setBudget] = useState(0);
+    const [budget] = useState(0);
     const [totalExpenses, setTotalExpenses] = useState(0);
     const [exceeded, setExceeded] = useState(false);
 
