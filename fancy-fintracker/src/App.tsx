@@ -3,6 +3,7 @@ import Home from "./components/Home";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 import Navbar from "./components/Navbar";
+import "./App.css"
 
 const App = () => {
     return (
