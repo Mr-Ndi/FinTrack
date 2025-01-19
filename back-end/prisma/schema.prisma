@@ -19,12 +19,13 @@ model User {
 model Account {
   id          Int    @id @default(autoincrement())
   userId      Int
-  accountType String // e.g. cash, MobileMoney, BankAccount
+  accountType String
   balance     Float  @default(0)
 
   transactions Transaction[]
 
-  user User @relation(fields: [userId], references: [id])
+  user    User     @relation(fields: [userId], references: [id])
+  budgets Budget[]
 }
 
 model Transaction {
@@ -40,19 +41,24 @@ model Transaction {
 }
 
 model Category {
-  id         Int        @id @default(autoincrement())
-  name       String     @unique
-  parentId    Int?  
-  parent     Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
-  children   Category[] @relation("CategoryHierarchy") 
+  id           Int           @id @default(autoincrement())
+  name         String        @unique
+  parentId     Int?
+  parent       Category?     @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children     Category[]    @relation("CategoryHierarchy")
   transactions Transaction[]
+  Budget       Budget[]
 }
 
 model Budget {
-  id         Int   @id @default(autoincrement())
-  userId     Int
-  categoryId Int
-  amount     Float
+  id          Int     @id @default(autoincrement())
+  userId      Int
+  accountId   Int?
+  accountType String?
+  categoryId  Int
+  amount      Float
 
-  user User @relation(fields: [userId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+  account  Account? @relation(fields: [accountId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
 }
