@@ -33,4 +33,27 @@ export class accountServices {
             }
         }
     }
+
+        /**
+   * Listing accounts for a user.
+   * 
+   * @param userId - The ID of the user who owns the account.
+   **/
+    async userAccounts(
+        userId: number
+    ){
+        try {
+            const Accounts = await accountInstance.listAccounts(
+                userId,
+            );
+            console.log("Account listing act perfomed succesfully");
+            return Accounts
+        } catch (error) {
+            if (error instanceof Error) {
+                console.error('Error creating transaction:', error.message);
+            } else {
+                console.error('An unknown error occurred:', error);
+            }
+        }
+    }
 }
