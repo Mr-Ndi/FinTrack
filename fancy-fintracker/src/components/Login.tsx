@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axiosInstance from "../utils/axious";
-import "./Login.css"; 
+import "./Login.css";
+import { Shield, Lock } from "lucide-react";
+
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -24,7 +26,7 @@ const Login = () => {
 
             if (response.status === 200) {
                 console.log("Login successful:", response.data);
-                window.location.href = "/dashboard"; // Replace with react-router navigation if needed
+                window.location.href = "/dashboard";
             } else {
                 setError("Invalid credentials, please try again.");
             }
@@ -37,30 +39,51 @@ const Login = () => {
     };
 
     return (
-        <div className="login-container">
-            <h2 className="login-title">Login</h2>
-            {error && <p className="login-error">{error}</p>}
-            <input
-                className="login-input"
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-            />
-            <input
-                className="login-input"
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            <button
-                className="login-button"
-                onClick={handleLogin}
-                disabled={loading}
-            >
-                {loading ? "Logging in..." : "Login"}
-            </button>
+        <div className="home-container">
+            <div className="hero-section">
+                <h1 className="hero-title">
+                    Welcome Back to <span className="highlight">Fancy FinTracker</span>
+                </h1>
+                <p className="hero-description">
+                    Log in to continue managing your financial future with our powerful and intuitive tracking tools.
+                </p>
+            </div>
+
+            <div className="login-container">
+                <h2 className="login-title">Login</h2>
+                {error && <p className="login-error">{error}</p>}
+                <input
+                    className="login-input"
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                />
+                <input
+                    className="login-input"
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+                <button
+                    className="login-button"
+                    onClick={handleLogin}
+                    disabled={loading}
+                >
+                    {loading ? "Logging in..." : "Login"}
+                </button>
+
+                {/* Link to Signup */}
+                <div className="signup-link">
+                    <p>
+                        Don't have an account?{" "}
+                        <a href="/signup" className="signup-link-text">
+                            Create an account
+                        </a>
+                    </p>
+                </div>
+            </div>
         </div>
     );
 };

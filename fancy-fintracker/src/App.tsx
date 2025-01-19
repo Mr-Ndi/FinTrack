@@ -3,6 +3,7 @@ import Home from "./components/Home";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 import Navbar from "./components/Navbar";
+import Signup from "./components/Signup";
 import "./App.css"
 
 const App = () => {
@@ -13,6 +14,7 @@ const App = () => {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Signup />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                 </Routes>
             </div>
