@@ -19,7 +19,7 @@ model User {
 model Account {
   id          Int    @id @default(autoincrement())
   userId      Int
-  accountType String // e.g., MobileMoney, BankAccount
+  accountType String // e.g. cash, MobileMoney, BankAccount
   balance     Float  @default(0)
 
   transactions Transaction[]

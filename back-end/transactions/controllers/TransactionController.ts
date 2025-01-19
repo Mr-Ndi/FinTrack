@@ -91,3 +91,25 @@ export const AccountReport = async(req: Request, res:Response): Promise <void> =
         console.error('Error getting transaction history:', error.message);
     }
 }
+
+export const wholereport = async(req: Request, res: Response): Promise <void> =>{
+    const token = req.headers['authorization']
+    if(!token){
+        res.status(401).json({
+            "message": "Authorization token is required",
+            "status": 401
+        })
+    }
+
+    try {
+        const answer = await transaction.allAccounts()
+        res.status(200).json({
+            "message": "Historical report generated successfully",
+            "status": 200,
+            "datum": answer
+        })
+
+    } catch (error:any) {
+        console.error('Error getting transaction history:', error.message);
+    }
+}

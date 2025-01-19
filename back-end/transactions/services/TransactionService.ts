@@ -35,7 +35,7 @@ export class UserTransaction{
         }
     }
 
-     /**
+    /**
      * Show creates a transaction on all accounts based providede date.
      * @param begin - The initial date for the summary
      * @param end - The end date for our repost
@@ -61,7 +61,7 @@ export class UserTransaction{
             }
         }
     }
-      /**
+    /**
      * Show created a transaction based on provided account type.
      * @param accountType - The type of account to get its history either cash, momo or bank account
      */
@@ -74,6 +74,20 @@ export class UserTransaction{
         } catch (error) {
             console.error("Error fetching account history:", error);
             return "An error occurred while fetching account history."; 
+        }
+    }
+
+    /**
+     * Show created a transaction based on regaldless account type.
+     */
+    async allAccounts(){
+        try {
+            const historical = await transaction.getTransactions()
+            console.log("Accounts histoy retrived successfully !")
+            return (historical)
+        } catch (error) {
+            console.error("Error fetching accounts history:", error);
+            return "An error occurred while fetching accounts history."; 
         }
     }
 }
