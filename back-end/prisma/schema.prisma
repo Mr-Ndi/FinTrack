@@ -47,18 +47,18 @@ model Category {
   parent       Category?     @relation("CategoryHierarchy", fields: [parentId], references: [id])
   children     Category[]    @relation("CategoryHierarchy")
   transactions Transaction[]
-  Budget       Budget[]
+  Budgets       Budget[]
 }
 
 model Budget {
   id          Int     @id @default(autoincrement())
   userId      Int
-  accountId   Int?    // Optional: Link budget to a specific account
-  accountType String? // Optional: Link budget to account type (MobileMoney, BankAccount, etc.)
+  accountId   Int?
+  accountType String?
   categoryId  Int
   amount      Float
 
   user     User     @relation(fields: [userId], references: [id])
-  account  Account? @relation(fields: [accountId], references: [id]) // Optional relation to Account
+  account  Account? @relation(fields: [accountId], references: [id])
   category Category @relation(fields: [categoryId], references: [id])
 }

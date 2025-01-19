@@ -1,6 +1,15 @@
-import express from "express"
-import { setBudget } from "../controllers/BudgetController"
+import express from "express";
+import { 
+    setBudget, 
+    updateBudget, 
+    deleteBudget, 
+    getBudgets 
+} from "../controllers/BudgetController";
 
-const budgetRoute = express.Router()
+const budgetRoute = express.Router();
+budgetRoute.post('/budgets', setBudget);
+budgetRoute.put('/budgets/:budgetId', updateBudget);
+budgetRoute.delete('/budgets/:budgetId', deleteBudget);
+budgetRoute.get('/budgets', getBudgets);
 
-budgetRoute.post('/budgets', setBudget)
+export default budgetRoute;
