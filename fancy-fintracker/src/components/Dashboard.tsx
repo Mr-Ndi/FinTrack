@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "../api/axios";
 import './Dashboard.css';
+import Account from './Account'; // Import Account component
 
 interface Transaction {
   id: string;
@@ -10,7 +11,7 @@ interface Transaction {
   date: string;
 }
 
-interface Account {
+interface AccountData {
   id: string;
   name: string;
   balance: number;
@@ -18,10 +19,9 @@ interface Account {
 
 const Dashboard = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [accounts, setAccounts] = useState<AccountData[]>([]);
   const [loading, setLoading] = useState({ transactions: true, accounts: true });
-  const [showAccountOptions, setShowAccountOptions] = useState(false);
-  const [newAccount, setNewAccount] = useState({ name: "", balance: 0 });
+  const [activeSection, setActiveSection] = useState<string>(""); // Track which section is active
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -53,22 +53,6 @@ const Dashboard = () => {
     fetchTransactions();
     fetchAccounts();
   }, []);
-
-  const handleCreateAccount = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.post(
-        "/accounts",
-        { accountType: newAccount.name, balance: newAccount.balance },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setAccounts((prev) => [...prev, response.data.account]);
-      setNewAccount({ name: "", balance: 0 });
-      alert("Account created successfully!");
-    } catch (err) {
-      console.error("Error creating account", err);
-    }
-  };
 
   return (
     <div className="dashboard">
@@ -115,37 +99,50 @@ const Dashboard = () => {
           <section className="management-links">
             <h3>Manage</h3>
             <ul>
-              <li><a href="/accounts">Account</a></li>
-              <li><a href="/transactions">Transactions</a></li>
-              <li><a href="/reports">Reports</a></li>
-              <li><a href="/budgets">Budgets</a></li>
-              <li><a href="/categories">Categories</a></li>
+              {/* Use existing buttons to toggle sections */}
+              <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveSection("accounts"); }}>Account</a></li>
+              <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveSection("transactions"); }}>Transactions</a></li>
+              <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveSection("reports"); }}>Reports</a></li>
+              <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveSection("budgets"); }}>Budgets</a></li>
+              <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveSection("categories"); }}>Categories</a></li>
             </ul>
           </section>
         </div>
 
         {/* Right Panel */}
-        {showAccountOptions && (
-          <div className="dashboard-right">
-            <h3>Create a New Account</h3>
-            <div className="account-creation-form">
-              <input
-                type="text"
-                placeholder="Account Name"
-                value={newAccount.name}
-                onChange={(e) => setNewAccount({ ...newAccount, name: e.target.value })}
-              />
-              <input
-                type="number"
-                placeholder="Initial Balance"
-                value={newAccount.balance}
-                onChange={(e) => setNewAccount({ ...newAccount, balance: Number(e.target.value) })}
-              />
-              <button onClick={handleCreateAccount}>Create Account</button>
-              <button onClick={() => setShowAccountOptions(false)}>Close</button>
-            </div>
-          </div>
-        )}
+        <div className="dashboard-right">
+          {/* Conditionally render sections based on the active section */}
+          {activeSection === "accounts" && (
+            <>
+              {/* Render Account Component */}
+              <Account />
+            </>
+          )}
+          {activeSection === "transactions" && (
+            <>
+              {/* Placeholder for Transactions Section */}
+              <h3>Transactions Management Coming Soon!</h3>
+            </>
+          )}
+          {activeSection === "reports" && (
+            <>
+              {/* Placeholder for Reports Section */}
+              <h3>Reports Management Coming Soon!</h3>
+            </>
+          )}
+          {activeSection === "budgets" && (
+            <>
+              {/* Placeholder for Budgets Section */}
+              <h3>Budgets Management Coming Soon!</h3>
+            </>
+          )}
+          {activeSection === "categories" && (
+            <>
+              {/* Placeholder for Categories Section */}
+              <h3>Categories Management Coming Soon!</h3>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

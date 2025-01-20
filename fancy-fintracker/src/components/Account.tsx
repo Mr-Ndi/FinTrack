@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../api/axios";
+import './Account.css'; // Import the new CSS file
 
 interface Account {
   id: string;
@@ -80,56 +81,56 @@ const Account: React.FC = () => {
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-green-500">Manage Accounts</h2>
+    <div className="account-container">
+      <h2 className="account-heading">Manage Accounts</h2>
 
       {/* Account Creation Form */}
-      <div className="mb-8 p-4 bg-gray-800 rounded-lg">
-        <h3 className="text-xl mb-4 text-green-400">Create New Account</h3>
-        <div className="flex flex-col gap-4">
+      <div className="account-form">
+        <h3 className="account-subheading">Create New Account</h3>
+        <div>
           <input
             type="text"
             placeholder="Account Type"
             value={newAccount.name}
             onChange={(e) => setNewAccount({ ...newAccount, name: e.target.value })}
-            className="p-2 rounded bg-gray-700 text-white"
+            className="account-input"
           />
           <input
             type="number"
             placeholder="Initial Balance"
             value={newAccount.balance}
             onChange={(e) => setNewAccount({ ...newAccount, balance: Number(e.target.value) })}
-            className="p-2 rounded bg-gray-700 text-white"
+            className="account-input"
           />
           <button
             onClick={handleCreateAccount}
-            className="bg-green-500 text-white p-2 rounded hover:bg-green-600"
+            className="account-button"
           >
             Create Account
           </button>
         </div>
-        {error && <p className="text-red-500 mt-2">{error}</p>}
+        {error && <p className="error-message">{error}</p>}
       </div>
 
       {/* Accounts List */}
-      <div className="bg-gray-800 rounded-lg p-4">
-        <h3 className="text-xl mb-4 text-green-400">Your Accounts</h3>
+      <div className="accounts-list">
+        <h3 className="account-subheading">Your Accounts</h3>
         {accounts.length === 0 ? (
           <p className="text-gray-400">No accounts found</p>
         ) : (
-          <ul className="space-y-3">
+          <ul>
             {accounts.map((account) => (
               <li 
                 key={account.id}
-                className="flex justify-between items-center p-3 bg-gray-700 rounded"
+                className="accounts-list-item"
               >
                 <div>
-                  <span className="text-white">{account.name}</span>
-                  <span className="ml-4 text-green-400">${account.balance}</span>
+                  <span>{account.name}</span>
+                  <span>${account.balance}</span>
                 </div>
                 <button
                   onClick={() => handleDeleteAccount(account.id)}
-                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                  className="delete-button account-button"
                 >
                   Delete
                 </button>

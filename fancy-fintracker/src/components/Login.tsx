@@ -14,50 +14,67 @@ const Login: React.FC = () => {
             setError("Please enter valid credentials");
             return;
         }
-
+    
         setError("");
         setLoading(true);
-
+    
         try {
             const response = await axiosInstance.post("/login", {
                 email,
                 password,
             });
-
+    
             if (response.status === 200) {
                 console.log("Login successful:", response.data);
                 window.location.href = "/dashboard";
             } else {
+            
                 setError("Invalid credentials, please try again.");
             }
         } catch (err: any) {
             console.error("Error during login:", err);
-            setError(err.response?.data?.message || "Something went wrong.");
+            
+        
+            if (err.response) {
+            
+                if (err.response.status === 401) {
+                
+                    setError("Invalid email or password. Please try again.");
+                } else if (err.response.status === 404) {
+                
+                    setError("Email not found. Please check your email or sign up.");
+                } else {
+                    setError(err.response?.data?.message || "Something went wrong.");
+                }
+            } else {
+                setError("Network error. Please try again later.");
+            }
         } finally {
             setLoading(false);
         }
     };
+    
 
     return (
         <div className="login-container">
             <h2 className="login-title">Login</h2>
             {error && <p className="login-error">{error}</p>}
             <input
-                className="signup-input" // Use the same class as Signup
+                className="signup-input"
                 type="email"
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
             />
             <input
-                className="signup-input" // Use the same class as Signup
+                className="signup-input"
                 type="password"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
             />
             <button
-                className="signup-button" // Use the same class as Signup
+                className="signup-button"
                 onClick={handleLogin}
                 disabled={loading}
             >
