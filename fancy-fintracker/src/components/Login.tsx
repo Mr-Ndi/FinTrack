@@ -1,7 +1,6 @@
 import { useState } from "react";
 import axiosInstance from "../utils/axious";
 import "./Login.css";
-import { Shield, Lock } from "lucide-react";
 
 const Login = () => {
     const [email, setEmail] = useState("");
