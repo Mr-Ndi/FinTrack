@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axiosInstance from "../utils/axious";
+import axiosInstance from "../api/axios";
 import "./Login.css";
 
 const Login = () => {

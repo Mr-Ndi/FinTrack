@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom"; 
-import axiosInstance from "../utils/axious"; 
+import axiosInstance from "../api/axios"; 
 import "./Signup.css"; 
 
 const Signup: React.FC = () => {
