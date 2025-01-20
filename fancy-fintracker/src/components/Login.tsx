@@ -1,8 +1,9 @@
 import { useState } from "react";
 import axiosInstance from "../api/axios";
+import { Link } from "react-router-dom"; 
 import "./Login.css";
 
-const Login = () => {
+const Login: React.FC = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -38,51 +39,36 @@ const Login = () => {
     };
 
     return (
-        <div className="home-container">
-            <div className="hero-section">
-                <h1 className="hero-title">
-                    Welcome Back to <span className="highlight">Fancy FinTracker</span>
-                </h1>
-                <p className="hero-description">
-                    Log in to continue managing your financial future with our powerful and intuitive tracking tools.
-                </p>
-            </div>
+        <div className="login-container">
+            <h2 className="login-title">Login</h2>
+            {error && <p className="login-error">{error}</p>}
+            <input
+                className="signup-input" // Use the same class as Signup
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+            />
+            <input
+                className="signup-input" // Use the same class as Signup
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+            />
+            <button
+                className="signup-button" // Use the same class as Signup
+                onClick={handleLogin}
+                disabled={loading}
+            >
+                {loading ? "Logging in..." : "Login"}
+            </button>
 
-            <div className="login-container">
-                <h2 className="login-title">Login</h2>
-                {error && <p className="login-error">{error}</p>}
-                <input
-                    className="login-input"
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-                <input
-                    className="login-input"
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                <button
-                    className="login-button"
-                    onClick={handleLogin}
-                    disabled={loading}
-                >
-                    {loading ? "Logging in..." : "Login"}
-                </button>
-
-                {/* Link to Signup */}
-                <div className="signup-link">
-                    <p>
-                        Don't have an account?{" "}
-                        <a href="/signup" className="signup-link-text">
-                            Create an account
-                        </a>
-                    </p>
-                </div>
-            </div>
+            {/* Link to Signup */}
+            <p className="signup-message">
+                Don't have an account?{" "}
+                <Link to="/signup" className="signup-link">Create an account</Link>
+            </p>
         </div>
     );
 };
