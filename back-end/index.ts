@@ -23,6 +23,7 @@ app.use("/fintracker",userRoute)
 app.listen(PORT, ()=>{
     console.log(`
         --------------------------------------\n
-        Server is http://localhost:${PORT}
+        I. Server is http://localhost:${PORT}
+        II. https://fintrack-7xtb.onrender.com/
         --------------------------------------\n`)
 })

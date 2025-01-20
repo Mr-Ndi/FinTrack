@@ -1,10 +1,10 @@
 import express from "express"
 import { deleteAccount, newAccount, userAccounts } from "../controllers/AccountController"
 
-const accoutRoutes = express.Router()
+const accountRoutes = express.Router()
 
-accoutRoutes.post('accounts', newAccount)
-accoutRoutes.get('accounts', userAccounts)
-accoutRoutes.get('accounts/{accountId}', deleteAccount)
+accountRoutes.post('accounts', newAccount)
+accountRoutes.get('accounts', userAccounts)
+accountRoutes.get('accounts/{accountId}', deleteAccount)
 
-export default accoutRoutes
+export default accountRoutes

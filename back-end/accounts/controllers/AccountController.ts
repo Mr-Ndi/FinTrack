@@ -77,27 +77,31 @@ export const userAccounts = async (req: Request, res: Response): Promise<any> =>
  * Controller to a specified account for a logged-in user.
  * It uses the JWT token from the request to authenticate account owner.
  */
-export const deleteAccount = async(req: Request, res: Response): Promise<any> => {
-  const token = req.headers['authorization']
-  const accountType = req.body
-  
-  if (!token) {
-    return res.status(401).json({ message: "No authorization token provided." });
-  }
-
-  if (!accountType) {
-    res.status(401).json({
-      "message": "Account type to be deleted is required",
-      "status": 401
-    });
-  }
+export const deleteAccount = async (req: Request, res: Response): Promise<any> => {
   try {
-    const result = service.delete_Accounts(accountType)
-    res.status(200).json({
-      "message": "Account deletion is done",
-      "status": 200
-    });
-  } catch (error:any) {
-    console.log(`The Error occured ${error.message}`)
+    const token = req.headers['authorization']?.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({ message: "No authorization token provided." });
+    }
+
+    let decoded: any;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+    } catch (err) {
+      return res.status(401).json({ message: "Invalid or expired token." });
+    }
+
+    const userId = decoded.userId;
+    const accountId = req.params.accountId;
+
+    if (!accountId) {
+      return res.status(400).json({ message: "Account ID is required." });
+    }
+
+    await service.delete_Accounts(userId);
+    res.status(200).json({ message: "Account deleted successfully." });
+  } catch (error) {
+    console.error("Error deleting account:", error);
+    res.status(500).json({ message: "Internal server error." });
   }
-}
+};
