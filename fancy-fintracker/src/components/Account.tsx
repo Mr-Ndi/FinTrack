@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../api/axios";
-import './Account.css'; // Import the new CSS file
+import './Account.css';
 
 interface Account {
   id: string;
@@ -14,30 +14,55 @@ const Account: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
 
-  // Fetch accounts when component mounts
+
+  const validateToken = (): boolean => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setError("Session expired. Please log in.");
+      return false;
+    }
+    return true;
+  };
+
+
   useEffect(() => {
-    fetchAccounts();
+    if (!validateToken()) {
+      setLoading(false);
+    } else {
+      fetchAccounts();
+    }
   }, []);
 
+
   const fetchAccounts = async () => {
+    setError("");
     try {
       const token = localStorage.getItem("token");
-      const response = await axiosInstance.get("/accounts", {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      
-      if (response.data.account) {
-        setAccounts(response.data.account);
+
+      if (!token) {
+        throw new Error("No token found. Please log in.");
       }
-      setLoading(false);
-    } catch (err) {
-      console.error("Error fetching accounts:", err);
-      setError("Failed to load accounts");
+
+      const response = await axiosInstance.get("/accounts", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setAccounts(response.data.account || []);
+    } catch (err: any) {
+      if (err.response?.status === 401) {
+        setError("Session expired. Please log in again.");
+        localStorage.removeItem("token");
+      } else {
+        setError("Failed to load accounts");
+      }
+    } finally {
       setLoading(false);
     }
   };
 
+
   const handleCreateAccount = async () => {
+    setError("");
     try {
       if (!newAccount.name.trim()) {
         setError("Account type is required");
@@ -45,15 +70,19 @@ const Account: React.FC = () => {
       }
 
       const token = localStorage.getItem("token");
+      if (!token) {
+        setError("No token found. Please log in.");
+        return;
+      }
+
       const response = await axiosInstance.post(
-        "/accounts",
+        "/account",
         { accountType: newAccount.name, balance: newAccount.balance },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      setAccounts(prev => [...prev, response.data.account]);
+      setAccounts((prev) => [...prev, response.data.account]);
       setNewAccount({ id: "", name: "", balance: 0 });
-      setError("");
       alert(response.data.message || "Account created successfully!");
     } catch (err) {
       console.error("Error creating account:", err);
@@ -61,14 +90,21 @@ const Account: React.FC = () => {
     }
   };
 
+
   const handleDeleteAccount = async (accountId: string) => {
+    setError("");
     try {
       const token = localStorage.getItem("token");
+      if (!token) {
+        setError("No token found. Please log in.");
+        return;
+      }
+
       await axiosInstance.delete(`/accounts/${accountId}`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
 
-      setAccounts(prev => prev.filter(account => account.id !== accountId));
+      setAccounts((prev) => prev.filter((account) => account.id !== accountId));
       alert("Account deleted successfully!");
     } catch (err) {
       console.error("Error deleting account:", err);
@@ -102,10 +138,7 @@ const Account: React.FC = () => {
             onChange={(e) => setNewAccount({ ...newAccount, balance: Number(e.target.value) })}
             className="account-input"
           />
-          <button
-            onClick={handleCreateAccount}
-            className="account-button"
-          >
+          <button onClick={handleCreateAccount} className="account-button">
             Create Account
           </button>
         </div>
@@ -120,10 +153,7 @@ const Account: React.FC = () => {
         ) : (
           <ul>
             {accounts.map((account) => (
-              <li 
-                key={account.id}
-                className="accounts-list-item"
-              >
+              <li key={account.id} className="accounts-list-item">
                 <div>
                   <span>{account.name}</span>
                   <span>${account.balance}</span>

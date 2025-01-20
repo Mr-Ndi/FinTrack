@@ -26,22 +26,22 @@ const Login: React.FC = () => {
     
             if (response.status === 200) {
                 console.log("Login successful:", response.data);
+                
+                // Store the token in localStorage
+                localStorage.setItem("authToken", response.data.token);
+    
+                // Redirect to the dashboard
                 window.location.href = "/dashboard";
             } else {
-            
                 setError("Invalid credentials, please try again.");
             }
         } catch (err: any) {
             console.error("Error during login:", err);
-            
-        
+    
             if (err.response) {
-            
                 if (err.response.status === 401) {
-                
                     setError("Invalid email or password. Please try again.");
                 } else if (err.response.status === 404) {
-                
                     setError("Email not found. Please check your email or sign up.");
                 } else {
                     setError(err.response?.data?.message || "Something went wrong.");
@@ -53,6 +53,7 @@ const Login: React.FC = () => {
             setLoading(false);
         }
     };
+    
     
 
     return (
