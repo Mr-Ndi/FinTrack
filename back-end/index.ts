@@ -32,6 +32,6 @@ app.listen(PORT, ()=>{
     console.log(`
         --------------------------------------\n
         I. Server is http://localhost:${PORT}
-        II. https://fintrack-7xtb.onrender.com/
+        II. https://fintrack-kont.onrender.com
         --------------------------------------\n`)
 })
