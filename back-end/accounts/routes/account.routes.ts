@@ -3,7 +3,7 @@ import { deleteAccount, newAccount, userAccounts } from "../controllers/AccountC
 
 const accountRoutes = express.Router()
 
-accountRoutes.post('/accounts', newAccount)
+accountRoutes.post('/account', newAccount)
 accountRoutes.get('/accounts', userAccounts)
 accountRoutes.get('/accounts/{accountId}', deleteAccount)
 
