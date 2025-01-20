@@ -7,11 +7,11 @@ import {
     deleteCategory
 } from "../controllers/CategoryController";
 
-const router = express.Router();
-router.post("/categories", createCategory);
-// router.get("/categories/:categoryId", getCategoryById);
-// router.get("/categories", getAllCategories);
-router.put("/categories/:categoryId", updateCategory);
-router.delete("/categories/:categoryId", deleteCategory);
+const categoryRouter = express.Router();
+categoryRouter.post("/categories", createCategory);
+// categoryRouter.get("/categories/:categoryId", getCategoryById);
+// categoryRouter.get("/categories", getAllCategories);
+categoryRouter.put("/categories/:categoryId", updateCategory);
+categoryRouter.delete("/categories/:categoryId", deleteCategory);
 
-export default router;
+export default categoryRouter;
