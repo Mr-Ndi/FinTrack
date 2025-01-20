@@ -33,14 +33,18 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    res.status(400).json({ error: "Email and password are required." });
-    return;
+      res.status(400).json({ error: "Email and password are required." });
+      return;
   }
 
   try {
-    const token = await userservice.authenticateUser(email, password);
-    res.status(200).json({ token });
-  } catch (error: unknown) {
-    res.status(401).json({ error: error });
+      const token = await userservice.authenticateUser(email, password);
+      res.status(200).json({ token });
+  } catch (error: any) {
+      if (error.message === "Invalid email or password.") {
+          res.status(401).json({ error: "Invalid email or password." });
+      } else {
+          res.status(500).json({ error: "An unexpected error occurred. Please try again later." });
+      }
   }
 };
