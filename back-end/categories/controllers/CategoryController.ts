@@ -80,29 +80,29 @@ export const createCategory = async (req: Request, res: Response): Promise<any> 
  * @param req - Express Request object
  * @param res - Express Response object
  */
-// export const getAllCategories = async (req: Request, res: Response): Promise<any> => {
-//     try {
-//         const token = req.headers['authorization']?.split(" ")[1];
+export const getAllCategories = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const token = req.headers['authorization']?.split(" ")[1];
 
-//         if (!token) {
-//             return res.status(401).json({ message: "No authorization token provided." });
-//         }
+        if (!token) {
+            return res.status(401).json({ message: "No authorization token provided." });
+        }
 
-//         let decoded: any;
-//         try {
-//             decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-//         } catch (err) {
-//             return res.status(401).json({ message: "Invalid or expired token." });
-//         }
+        let decoded: any;
+        try {
+            decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+        } catch (err) {
+            return res.status(401).json({ message: "Invalid or expired token." });
+        }
 
-//         const categories = await categoryService.getAllCategories();
+        const categories = await categoryService.getAllCategories();
 
-//         return res.status(200).json({ message: "Categories retrieved successfully.", categories });
-//     } catch (error: any) {
-//         console.log(`Error occurred while retrieving categories: ${error.message}`);
-//         return res.status(500).json({ message: `Error occurred while retrieving categories: ${error.message}` });
-//     }
-// };
+        return res.status(200).json({ message: "Categories retrieved successfully.", categories });
+    } catch (error: any) {
+        console.log(`Error occurred while retrieving categories: ${error.message}`);
+        return res.status(500).json({ message: `Error occurred while retrieving categories: ${error.message}` });
+    }
+};
 
 /**
  * Controller to update a category by its ID.

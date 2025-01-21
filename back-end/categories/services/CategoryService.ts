@@ -42,16 +42,16 @@ export class CategoryService {
   /**
    * Retrieve all categories.
    */
-//   async getAllCategories() {
-//     try {
-//       const categories = await categoryModel.getAllCategories();
-//       console.log("All categories retrieved successfully:", categories);
-//       return categories;
-//     } catch (error: any) {
-//       console.log(`Error occurred while retrieving categories: ${error.message}`);
-//       throw error;
-//     }
-//   }
+  async getAllCategories() {
+    try {
+      const categories = await categoryModel.getAllCategories();
+      console.log("All categories retrieved successfully:", categories);
+      return categories;
+    } catch (error: any) {
+      console.log(`Error occurred while retrieving categories: ${error.message}`);
+      throw error;
+    }
+  }
 
   /**
    * Update a category by its ID.

@@ -67,16 +67,16 @@ export class CategoryModel {
    * Get all categories.
    * @returns An array of all categories.
    */
-  // async getAllCategories(): Promise<Category[]> {
-  //   return this.prisma.category.findMany({
-  //     include: {
-  //       parent: true,
-  //       children: true,
-  //       transactions: true,
-  //       budgets: true,
-  //     },
-  //   });
-  // }
+  async getAllCategories(): Promise<Category[]> {
+    return this.prisma.category.findMany({
+      include: {
+        parent: true,
+        children: true,
+        transactions: true,
+        budgets: true,
+      },
+    });
+  }
 
   /**
    * Close the Prisma client connection.
