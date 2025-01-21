@@ -7,7 +7,6 @@ import Budget from "./Budget";
 import Category from "./Category";
 import BudgetGraph from "./BudgetGraph";
 
-
 interface TransactionData {
   id: string;
   amount: number;
@@ -82,8 +81,10 @@ const Dashboard = () => {
         });
     
         console.log("Accounts API response:", response.data);
-
-        const accountData = response.data.datum || [];
+    
+        const accountData = response.data.account || [];
+        console.log("Parsed Account Data:", accountData);
+    
         if (Array.isArray(accountData)) {
           setAccounts(mapAccountData(accountData));
         } else {
@@ -97,7 +98,7 @@ const Dashboard = () => {
       }
     };
     
-
+    
     fetchTransactions();
     fetchAccounts();
   }, []);
@@ -105,13 +106,13 @@ const Dashboard = () => {
   return (
     <div className="dashboard">
       <div className="dashboard-content">
-        {/* Left Panel */}
+      
         <div className="dashboard-left">
           <h2>Welcome to your Dashboard / Aho bibera!</h2>
 
-          {/* Accounts Section */}
+        
           <section className="accounts">
-            <h3>Your Accounts</h3>
+            <h3>Your Account Names</h3>
             {loading.accounts ? (
               <div className="spinner"></div>
             ) : (
@@ -119,7 +120,7 @@ const Dashboard = () => {
                 <ul>
                   {accounts.map((account) => (
                     <li key={account.id}>
-                      <span>{account.name}</span> - <span>${account.balance}</span>
+                      <span>{account.name}</span>
                     </li>
                   ))}
                 </ul>
@@ -129,7 +130,7 @@ const Dashboard = () => {
             )}
           </section>
 
-          {/* Transactions Section */}
+        
           <section className="transactions">
             <h3>Recent Transactions</h3>
             {loading.transactions ? (
@@ -151,7 +152,7 @@ const Dashboard = () => {
             )}
           </section>
 
-          {/* Management Links */}
+        
           <section className="management-links">
             <h3>Manage</h3>
             <ul>
@@ -213,12 +214,11 @@ const Dashboard = () => {
             </ul>
           </section>
         </div>
-
-        {/* Right Panel */}
+      
         <div className="dashboard-right">
           {activeSection === "accounts" && <Account />}
-          {activeSection === "transactions" && <Transaction />} {/* Render Transaction component */}
-          {activeSection === "budgets" && <Budget />} {/* Render Budget component */}
+          {activeSection === "transactions" && <Transaction />}
+          {activeSection === "budgets" && <Budget />}
           {activeSection === "reports" && < BudgetGraph/>}
           {activeSection === "categories" && <Category />}
         </div>
