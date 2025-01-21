@@ -5,45 +5,52 @@ const transaction = new UserTransaction();
 export const transact = async (req: Request, res: Response): Promise<void> => {
     const { accountId, amount, categoryIds, description } = req.body;
     const token = req.headers["authorization"];
-  
+
     if (!accountId || !amount || !categoryIds || !description) {
-      res.status(400).json({
-        message: "All fields (accountId, amount, categoryIds, description) are required.",
-        status: 400,
-      });
-      return;
+        res.status(400).json({
+            message: "All fields (accountId, amount, categoryIds, description) are required.",
+            status: 400,
+        });
+        return;
     }
-  
     if (!token) {
-      res.status(401).json({
-        message: "Authorization token is required.",
-        status: 401,
-      });
-      return;
+        res.status(401).json({
+            message: "Authorization token is required.",
+            status: 401,
+        });
+        return;
     }
-  
+    const accountIdAsNumber = parseInt(accountId, 10);
+    if (isNaN(accountIdAsNumber)) {
+        res.status(400).json({
+            message: "Invalid accountId provided. It must be a number.",
+            status: 400,
+        });
+        return;
+    }
+
     try {
-      const message = await transaction.makeTransaction(
-        accountId,
-        amount,
-        categoryIds,
-        description
-      );
-      res.status(200).json({
-        message: "Transaction created successfully",
-        status: 200,
-        data: message,
-      });
+        const message = await transaction.makeTransaction(
+            accountIdAsNumber,
+            amount,
+            categoryIds,
+            description
+        );
+        res.status(200).json({
+            message: "Transaction created successfully",
+            status: 200,
+            data: message,
+        });
     } catch (error: any) {
-      console.error("Error creating transaction:", error.message);
-      res.status(500).json({
-        message: "Failed to create transaction.",
-        status: 500,
-        error: error.message,
-      });
+        console.error("Error creating transaction:", error.message);
+        res.status(500).json({
+            message: "Failed to create transaction.",
+            status: 500,
+            error: error.message,
+        });
     }
-  };
-  
+};
+
 
 export const report = async(req: Request, res: Response): Promise <void>=>{
     const { initial, final } = req.body;
