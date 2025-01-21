@@ -3,6 +3,7 @@ import axios from "../api/axios";
 import "./Dashboard.css";
 import Account from "./Account";
 import Transaction from "./Transaction"; // Import Transaction component
+import Budget from "./Budget"; // Import Budget component
 
 interface TransactionData {
   id: string;
@@ -190,7 +191,7 @@ const Dashboard = () => {
                   href="#"
                   onClick={(e) => {
                     e.preventDefault();
-                    setActiveSection("budgets");
+                    setActiveSection("budgets"); // Trigger Budget component
                   }}
                 >
                   Budgets
@@ -215,8 +216,8 @@ const Dashboard = () => {
         <div className="dashboard-right">
           {activeSection === "accounts" && <Account />}
           {activeSection === "transactions" && <Transaction />} {/* Render Transaction component */}
+          {activeSection === "budgets" && <Budget />} {/* Render Budget component */}
           {activeSection === "reports" && <h3>Reports Management Coming Soon!</h3>}
-          {activeSection === "budgets" && <h3>Budgets Management Coming Soon!</h3>}
           {activeSection === "categories" && <h3>Categories Management Coming Soon!</h3>}
         </div>
       </div>
