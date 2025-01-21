@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import axios from "../api/axios";
 import "./Dashboard.css";
 import Account from "./Account";
-import Transaction from "./Transaction"; // Import Transaction component
-import Budget from "./Budget"; // Import Budget component
+import Transaction from "./Transaction";
+import Budget from "./Budget";
+import Category from "./Category";
+import BudgetGraph from "./BudgetGraph";
+
 
 interface TransactionData {
   id: string;
@@ -79,8 +82,7 @@ const Dashboard = () => {
         });
     
         console.log("Accounts API response:", response.data);
-    
-        // Parse `datum` field
+
         const accountData = response.data.datum || [];
         if (Array.isArray(accountData)) {
           setAccounts(mapAccountData(accountData));
@@ -169,8 +171,8 @@ const Dashboard = () => {
                   href="#"
                   onClick={(e) => {
                     e.preventDefault();
-                    setActiveSection("transactions"); // Trigger Transaction component
-                  }}
+                    setActiveSection("transactions");
+                   }}
                 >
                   Transactions
                 </a>
@@ -191,7 +193,7 @@ const Dashboard = () => {
                   href="#"
                   onClick={(e) => {
                     e.preventDefault();
-                    setActiveSection("budgets"); // Trigger Budget component
+                    setActiveSection("budgets");
                   }}
                 >
                   Budgets
@@ -217,8 +219,8 @@ const Dashboard = () => {
           {activeSection === "accounts" && <Account />}
           {activeSection === "transactions" && <Transaction />} {/* Render Transaction component */}
           {activeSection === "budgets" && <Budget />} {/* Render Budget component */}
-          {activeSection === "reports" && <h3>Reports Management Coming Soon!</h3>}
-          {activeSection === "categories" && <h3>Categories Management Coming Soon!</h3>}
+          {activeSection === "reports" && < BudgetGraph/>}
+          {activeSection === "categories" && <Category />}
         </div>
       </div>
     </div>

@@ -1,0 +1,16 @@
+.budget-graph-container {
+    padding: 24px;
+    max-width: 600px;
+    margin: auto;
+  }
+  
+  .graph-heading {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  
+  .error-message {
+    color: #ff4d4d; /* Red for errors */
+  }
+  
