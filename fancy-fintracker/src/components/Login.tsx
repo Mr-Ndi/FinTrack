@@ -26,11 +26,20 @@ const Login: React.FC = () => {
     
             if (response.status === 200) {
                 console.log("Login successful:", response.data);
-                
-                // Store the token in localStorage
-                localStorage.setItem("authToken", response.data.token);
+    
+                // Verify token presence
+                const token = response.data.token;
+                if (!token) {
+                    setError("No token received from the server.");
+                    return;
+                }
+    
+                // Store the token in sessionStorage
+                sessionStorage.setItem("authToken", token);
+                console.log("Token stored in sessionStorage:", sessionStorage.getItem("authToken"));
     
                 // Redirect to the dashboard
+                console.log("Redirecting to dashboard...");
                 window.location.href = "/dashboard";
             } else {
                 setError("Invalid credentials, please try again.");
@@ -53,6 +62,7 @@ const Login: React.FC = () => {
             setLoading(false);
         }
     };
+    
     
     
 

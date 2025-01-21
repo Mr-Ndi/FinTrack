@@ -14,6 +14,8 @@ app.use(express.json())
 
 const corsOptions = {
     origin: '*',
+    // origin: ['https://fintrack.mrndi.tech'],
+    // origin: 'http://localhost:5173',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     optionsSuccessStatus: 204

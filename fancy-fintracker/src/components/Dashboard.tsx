@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "../api/axios";
-import './Dashboard.css';
-import Account from './Account'; // Import Account component
+import "./Dashboard.css";
+import Account from "./Account";
+import Transaction from "./Transaction"; // Import Transaction component
 
-interface Transaction {
+interface TransactionData {
   id: string;
   amount: number;
   type: "income" | "expense";
@@ -18,37 +19,81 @@ interface AccountData {
 }
 
 const Dashboard = () => {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [transactions, setTransactions] = useState<TransactionData[]>([]);
   const [accounts, setAccounts] = useState<AccountData[]>([]);
   const [loading, setLoading] = useState({ transactions: true, accounts: true });
-  const [activeSection, setActiveSection] = useState<string>(""); // Track which section is active
+  const [activeSection, setActiveSection] = useState<string>("");
+
+  const mapAccountData = (data: any[]): AccountData[] => {
+    return data.map((account) => ({
+      id: account.id.toString(),
+      name: account.accountType,
+      balance: account.balance || 0,
+    }));
+  };
 
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const token = localStorage.getItem("token");
+        const token = sessionStorage.getItem("authToken");
+    
+        if (!token) {
+          console.error("No token found. Redirecting to login...");
+          window.location.href = "/login";
+          return;
+        }
+    
         const response = await axios.get("/transactions", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setTransactions(response.data);
+    
+        if (response.status === 401) {
+          console.error("Unauthorized. Token might be expired.");
+          window.location.href = "/login";
+          return;
+        }
+    
+        const transactionData = response.data.datum || [];
+        setTransactions(transactionData);
         setLoading((prev) => ({ ...prev, transactions: false }));
-      } catch (err) {
-        console.error("Error fetching transactions", err);
+      } catch (err: any) {
+        if (err.response?.status === 401) {
+          console.error("Unauthorized. Redirecting to login...");
+          window.location.href = "/login";
+        } else {
+          console.error("Error fetching transactions", err);
+        }
+        setTransactions([]);
+        setLoading((prev) => ({ ...prev, transactions: false }));
       }
-    };
-
+    };   
+  
     const fetchAccounts = async () => {
       try {
-        const token = localStorage.getItem("token");
+        const token = sessionStorage.getItem("authToken");
+        if (!token) throw new Error("Token is missing");
+    
         const response = await axios.get("/accounts", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setAccounts(response.data);
+    
+        console.log("Accounts API response:", response.data);
+    
+        // Parse `datum` field
+        const accountData = response.data.datum || [];
+        if (Array.isArray(accountData)) {
+          setAccounts(mapAccountData(accountData));
+        } else {
+          throw new Error("Invalid data format for accounts");
+        }
         setLoading((prev) => ({ ...prev, accounts: false }));
       } catch (err) {
         console.error("Error fetching accounts", err);
+        setAccounts([]);
+        setLoading((prev) => ({ ...prev, accounts: false }));
       }
     };
+    
 
     fetchTransactions();
     fetchAccounts();
@@ -59,21 +104,25 @@ const Dashboard = () => {
       <div className="dashboard-content">
         {/* Left Panel */}
         <div className="dashboard-left">
-          <h2>Welcome to your Dashboard/ Aho bibera!</h2>
+          <h2>Welcome to your Dashboard / Aho bibera!</h2>
 
           {/* Accounts Section */}
           <section className="accounts">
             <h3>Your Accounts</h3>
             {loading.accounts ? (
-              <p>Loading accounts...</p>
+              <div className="spinner"></div>
             ) : (
-              <ul>
-                {accounts.map((account) => (
-                  <li key={account.id}>
-                    <span>{account.name}</span> - <span>${account.balance}</span>
-                  </li>
-                ))}
-              </ul>
+              accounts.length > 0 ? (
+                <ul>
+                  {accounts.map((account) => (
+                    <li key={account.id}>
+                      <span>{account.name}</span> - <span>${account.balance}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No accounts available.</p>
+              )
             )}
           </section>
 
@@ -83,15 +132,19 @@ const Dashboard = () => {
             {loading.transactions ? (
               <p>Loading transactions...</p>
             ) : (
-              <ul>
-                {transactions.map((transaction) => (
-                  <li key={transaction.id}>
-                    <span>{transaction.date}</span>
-                    <span>{transaction.category}</span>
-                    <span>{transaction.type === "income" ? "+" : "-"}${transaction.amount}</span>
-                  </li>
-                ))}
-              </ul>
+              transactions.length > 0 ? (
+                <ul>
+                  {transactions.map((transaction) => (
+                    <li key={transaction.id}>
+                      <span>{transaction.date}</span>
+                      <span>{transaction.category}</span>
+                      <span>{transaction.type === "income" ? "+" : "-"}${transaction.amount}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No transactions available.</p>
+              )
             )}
           </section>
 
@@ -99,49 +152,72 @@ const Dashboard = () => {
           <section className="management-links">
             <h3>Manage</h3>
             <ul>
-              {/* Use existing buttons to toggle sections */}
-              <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveSection("accounts"); }}>Account</a></li>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveSection("transactions"); }}>Transactions</a></li>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveSection("reports"); }}>Reports</a></li>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveSection("budgets"); }}>Budgets</a></li>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveSection("categories"); }}>Categories</a></li>
+              <li>
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActiveSection("accounts");
+                  }}
+                >
+                  Account
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActiveSection("transactions"); // Trigger Transaction component
+                  }}
+                >
+                  Transactions
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActiveSection("reports");
+                  }}
+                >
+                  Reports
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActiveSection("budgets");
+                  }}
+                >
+                  Budgets
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActiveSection("categories");
+                  }}
+                >
+                  Categories
+                </a>
+              </li>
             </ul>
           </section>
         </div>
 
         {/* Right Panel */}
         <div className="dashboard-right">
-          {/* Conditionally render sections based on the active section */}
-          {activeSection === "accounts" && (
-            <>
-              {/* Render Account Component */}
-              <Account />
-            </>
-          )}
-          {activeSection === "transactions" && (
-            <>
-              {/* Placeholder for Transactions Section */}
-              <h3>Transactions Management Coming Soon!</h3>
-            </>
-          )}
-          {activeSection === "reports" && (
-            <>
-              {/* Placeholder for Reports Section */}
-              <h3>Reports Management Coming Soon!</h3>
-            </>
-          )}
-          {activeSection === "budgets" && (
-            <>
-              {/* Placeholder for Budgets Section */}
-              <h3>Budgets Management Coming Soon!</h3>
-            </>
-          )}
-          {activeSection === "categories" && (
-            <>
-              {/* Placeholder for Categories Section */}
-              <h3>Categories Management Coming Soon!</h3>
-            </>
-          )}
+          {activeSection === "accounts" && <Account />}
+          {activeSection === "transactions" && <Transaction />} {/* Render Transaction component */}
+          {activeSection === "reports" && <h3>Reports Management Coming Soon!</h3>}
+          {activeSection === "budgets" && <h3>Budgets Management Coming Soon!</h3>}
+          {activeSection === "categories" && <h3>Categories Management Coming Soon!</h3>}
         </div>
       </div>
     </div>

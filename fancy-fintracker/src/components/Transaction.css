@@ -1,0 +1,60 @@
+.transaction-container {
+    padding: 24px;
+    max-width: 1024px;
+    margin: 0 auto;
+  }
+  
+  .transaction-heading {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 24px;
+    color: #4caf50;
+  }
+  
+  .transaction-subheading {
+    font-size: 1.25rem;
+    margin-bottom: 16px;
+  }
+  
+  .transaction-form {
+    margin-bottom: 32px;
+    padding: 16px;
+    background-color: #2c2c2c;
+    border-radius: 8px;
+  }
+  
+  .transaction-input {
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #3a3a3a;
+    color: white;
+    width: calc(33.33% - 12px); /* Adjust width for three inputs */
+  }
+  
+  .transaction-button {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+  }
+  
+  .transaction-button:hover {
+    background-color: #45a049;
+  }
+  
+  .error-message {
+    color: #ff4d4d; /* Red color for error messages */
+  }
+  
+  .transactions-list {
+    background-color: #2c2c2c;
+  }
+  
+  .transactions-list-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+    margin-bottom: 10px;
+    background-color: #3a3a3a; /* Darker gray for list items */
+  }
+  
