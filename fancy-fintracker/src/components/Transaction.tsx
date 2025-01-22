@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import axiosInstance from "../api/axios";
 import './Transaction.css';
 
-// Interfaces for data structures
 interface Category {
   id: string;
   name: string;
@@ -10,7 +9,7 @@ interface Category {
 
 interface Transaction {
   id: string;
-  accountType: string;
+  accountId: string;
   amount: number;
   description: string;
   categoryId: string;
@@ -25,7 +24,7 @@ interface Account {
 const Transaction: React.FC = () => {
   const [newTransaction, setNewTransaction] = useState<Transaction>({
     id: "",
-    accountType: "",
+    accountId: "",
     amount: 0,
     description: "",
     categoryId: "",
@@ -37,20 +36,20 @@ const Transaction: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
 
-  // Fetch data on component mount
+
   useEffect(() => {
     fetchAccounts();
     fetchCategories();
     fetchTransactions();
   }, []);
 
-  // Fetch accounts from API
+
   const fetchAccounts = async () => {
     setError("");
     setLoading(true);
     try {
       const token = sessionStorage.getItem("authToken");
-      console.log("Token:", token); // Debugging log
+      console.log("Token:", token);
       if (!token) {
         throw new Error("No token found. Please log in.");
       }
@@ -59,7 +58,7 @@ const Transaction: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log("Accounts Response:", response.data); // Debugging log
+      console.log("Accounts Response:", response.data);
       const accountData = Array.isArray(response.data.account) ? response.data.account : [];
       setAccounts(accountData);
     } catch (err: any) {
@@ -70,7 +69,7 @@ const Transaction: React.FC = () => {
     }
   };
 
-  // Fetch categories from API
+
   const fetchCategories = async () => {
     setError("");
     setLoading(true);
@@ -93,7 +92,7 @@ const Transaction: React.FC = () => {
     }
   };
 
-  // Fetch transactions from API
+
   const fetchTransactions = async () => {
     setError("");
     try {
@@ -104,58 +103,86 @@ const Transaction: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log("Transactions Response:", response.data); // Debugging log
-      const transactionsData = Array.isArray(response.data) ? response.data : [];
+      console.log("Transactions Response:", response.data);
+      const transactionsData = Array.isArray(response.data.datum) ? response.data.datum : [];
       setTransactions(transactionsData);
-    } catch (err:any) {
+    } catch (err: any) {
       console.error("Error fetching transactions:", err.response ? err.response.data : err.message);
       setError("Failed to load transactions");
-    } finally {
-      setLoading(false);
     }
   };
 
-  // Handle transaction creation
+
   const handleCreateTransaction = async () => {
     setError("");
     try {
-      if (!newTransaction.accountType || newTransaction.amount <= 0 || !newTransaction.description || !newTransaction.categoryId) {
+      if (!newTransaction.accountId || newTransaction.amount <= 0 || !newTransaction.description || !newTransaction.categoryId) {
         setError("All fields are required.");
         return;
       }
-
-      // Validate that the amount does not exceed the balance of the selected account
-      const selectedAccount = accounts.find(account => account.accountType === newTransaction.accountType);
-      if (selectedAccount && newTransaction.amount > selectedAccount.balance) {
+  
+    
+      const selectedAccount = accounts.find(account => account.id === newTransaction.accountId);
+      if (!selectedAccount) {
+        setError("Selected account not found.");
+        return;
+      }
+  
+      if (newTransaction.amount > selectedAccount.balance) {
         setError("Amount exceeds the available balance of the selected account.");
         return;
       }
-
-      // Prepare the transaction payload
+  
       const payload = {
-        accountId: selectedAccount?.id,
+        accountId: selectedAccount.id,
         amount: newTransaction.amount,
         transactionDate: new Date().toISOString(),
         description: newTransaction.description,
-        categoryIds: [newTransaction.categoryId],
+        categoryIds: [parseInt(newTransaction.categoryId, 10)],
       };
-
-      // Send the POST request
+  
       const token = sessionStorage.getItem("authToken");
       if (!token) throw new Error("No token found. Please log in.");
-
+  
+      console.log("Payload for API:", payload);
+  
       const response = await axiosInstance.post("/transact", payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
-      alert(response.data.message || "Transaction created successfully!");
+  
+      console.log("Transaction Create Response:", response.data);
+  
+      if (response.data.status === 200) {
+        console.log("Transaction successfully created!");
+  
       
-      // Refresh transactions and reset form
-      fetchTransactions();
-      setNewTransaction({ id: "", accountType: "", amount: 0, description: "", categoryId: "" });
-    } catch (err:any) {
+        await fetchAccounts();
+        await fetchTransactions();
+  
+        console.log("Accounts and Transactions refreshed successfully.");
+  
+      
+        setNewTransaction({ id: "", accountId: "", amount: 0, description: "", categoryId: "" });
+      } else {
+        setError("Transaction creation failed. Please try again.");
+      }
+    } catch (err: any) {
       console.error("Failed to create transaction:", err.response ? err.response.data : err.message);
       setError("Failed to create transaction");
+    }
+  }; 
+
+
+  const handleAccountTypeChange = (accountType: string) => {
+  
+    const account = accounts.find(acc => acc.accountType === accountType);
+  
+    if (account) {
+      console.log("Selected Account ID:", account.id);
+      setNewTransaction({ ...newTransaction, accountId: account.id });
+    } else {
+      console.warn("No account found for this type.");
+      setNewTransaction({ ...newTransaction, accountId: "" });
     }
   };
 
@@ -171,8 +198,8 @@ const Transaction: React.FC = () => {
         <div>
           {/* Account Type Dropdown */}
           <select
-            value={newTransaction.accountType}
-            onChange={(e) => setNewTransaction({ ...newTransaction, accountType: e.target.value })}
+            value={newTransaction.accountId ? accounts.find(acc => acc.id === newTransaction.accountId)?.accountType : ""}
+            onChange={(e) => handleAccountTypeChange(e.target.value)}
             className="transaction-input"
           >
             <option value="">Select Account</option>
@@ -233,7 +260,6 @@ const Transaction: React.FC = () => {
               transactions.map((transaction) => (
                 <li key={transaction.id} className="transactions-list-item">
                   <div>
-                    <span>{transaction.accountType}</span>
                     <span>${transaction.amount}</span>
                     <span>{transaction.description}</span>
                     <span>{transaction.categoryId}</span>
