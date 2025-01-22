@@ -169,24 +169,23 @@ const Transaction: React.FC = () => {
     try {
       const token = sessionStorage.getItem("authToken");
       if (!token) throw new Error("Authorization token is required");
-
+  
       if (!selectedAccountType) {
         setReportError("Please select an account type");
         return;
       }
-
-      const response = await axiosInstance.post(
-        "/transaction/report",
-        { accountType: selectedAccountType },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
+  
+      // Use the correct route and method
+      const response = await axiosInstance.get(`/transaction/${selectedAccountType}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+  
       setAccountReport(response.data.datum || []);
     } catch (err: any) {
       console.error("Error fetching account report:", err.response?.data || err.message);
       setReportError("Failed to fetch account report");
     }
-  };
+  }; 
 
   if (loading) return <div>Loading transactions...</div>;
 

@@ -10,14 +10,30 @@ interface Budget {
   accountType: string;
 }
 
+interface Category {
+  id: string;
+  name: string;
+}
+
+interface Account {
+  id: string;
+  accountType: string;
+  maxAmount: number;
+}
+
 const Budget: React.FC = () => {
   const [budgets, setBudgets] = useState<Budget[]>([]);
   const [newBudget, setNewBudget] = useState<Budget>({ id: "", categoryId: "", amount: 0, accountId: "", accountType: "" });
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [accounts, setAccounts] = useState<Account[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
+  const [transactionError, setTransactionError] = useState<string>("");
 
   useEffect(() => {
     fetchBudgets();
+    fetchCategories();
+    fetchAccounts();
   }, []);
 
   const fetchBudgets = async () => {
@@ -34,6 +50,46 @@ const Budget: React.FC = () => {
     } catch (err) {
       console.error("Error fetching budgets:", err);
       setError("Failed to load budgets");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCategories = async () => {
+    setTransactionError("");
+    setLoading(true);
+    try {
+      const token = sessionStorage.getItem("authToken");
+      if (!token) throw new Error("No token found. Please log in.");
+
+      const response = await axiosInstance.get("/categories", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setCategories(response.data.categories || []);
+    } catch (err) {
+      console.error("Error fetching categories:", err);
+      setTransactionError("Failed to load categories.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchAccounts = async () => {
+    setTransactionError("");
+    setLoading(true);
+    try {
+      const token = sessionStorage.getItem("authToken");
+      if (!token) throw new Error("No token found. Please log in.");
+
+      const response = await axiosInstance.get("/accounts", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setAccounts(response.data.accounts || []);
+    } catch (err) {
+      console.error("Error fetching accounts:", err);
+      setTransactionError("Failed to load accounts");
     } finally {
       setLoading(false);
     }
@@ -92,39 +148,55 @@ const Budget: React.FC = () => {
       {/* Budget Creation Form */}
       <div className="budget-form">
         <h3 className="budget-subheading">Create New Budget</h3>
-        <div>
-          <input
-            type="text"
-            placeholder="Category ID"
-            value={newBudget.categoryId}
-            onChange={(e) => setNewBudget({ ...newBudget, categoryId: e.target.value })}
-            className="budget-input"
-          />
-          <input
-            type="number"
-            placeholder="Amount"
-            value={newBudget.amount}
-            onChange={(e) => setNewBudget({ ...newBudget, amount: Number(e.target.value) })}
-            className="budget-input"
-          />
-          <input
-            type="text"
-            placeholder="Account ID"
-            value={newBudget.accountId}
-            onChange={(e) => setNewBudget({ ...newBudget, accountId: e.target.value })}
-            className="budget-input"
-          />
-          <input
-            type="text"
-            placeholder="Account Type"
-            value={newBudget.accountType}
-            onChange={(e) => setNewBudget({ ...newBudget, accountType: e.target.value })}
-            className="budget-input"
-          />
-          <button onClick={handleCreateBudget} className="budget-button">
-            Create Budget
-          </button>
-        </div>
+
+        {/* Category Dropdown */}
+        <select
+          value={newBudget.categoryId}
+          onChange={(e) => setNewBudget({ ...newBudget, categoryId: e.target.value })}
+          className="budget-input"
+        >
+          <option value="">Select Category</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
+        </select>
+
+        {/* Amount Input */}
+        <input
+          type="number"
+          placeholder="Amount"
+          value={newBudget.amount}
+          onChange={(e) => setNewBudget({ ...newBudget, amount: Number(e.target.value) })}
+          className="budget-input"
+        />
+
+        {/* Account Dropdown */}
+        <select
+          value={newBudget.accountId}
+          onChange={(e) => {
+            const selectedAccount = accounts.find(account => account.id === e.target.value);
+            setNewBudget({
+              ...newBudget,
+              accountId: e.target.value,
+              accountType: selectedAccount ? selectedAccount.accountType : ""
+            });
+          }}
+          className="budget-input"
+        >
+          <option value="">Select Account</option>
+          {accounts.map((account) => (
+            <option key={account.id} value={account.id}>
+              {account.accountType} (Max: ${account.maxAmount})
+            </option>
+          ))}
+        </select>
+
+        <button onClick={handleCreateBudget} className="budget-button">
+          Create Budget
+        </button>
+
         {error && <p className="error-message">{error}</p>}
       </div>
 
