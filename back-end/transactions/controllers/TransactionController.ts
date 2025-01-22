@@ -83,7 +83,7 @@ export const report = async(req: Request, res: Response): Promise <void>=>{
 }
 
 export const AccountReport = async(req: Request, res:Response): Promise <void> =>{
-    const accountType = req.body;
+    const accountType = req.body.accountType;
     const token = req.headers['authorization']
 
     if (!accountType) {
