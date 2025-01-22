@@ -28,6 +28,7 @@ const Budget: React.FC = () => {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
+// @ts-ignore
   const [transactionError, setTransactionError] = useState<string>("");
 
   useEffect(() => {
@@ -81,20 +82,23 @@ const Budget: React.FC = () => {
     try {
       const token = sessionStorage.getItem("authToken");
       if (!token) throw new Error("No token found. Please log in.");
-
+  
       const response = await axiosInstance.get("/accounts", {
         headers: { Authorization: `Bearer ${token}` },
       });
-
-      setAccounts(response.data.accounts || []);
-    } catch (err) {
-      console.error("Error fetching accounts:", err);
+  
+      console.log("Full API response:", response.data);
+  
+    
+      setAccounts(Array.isArray(response.data.account) ? response.data.account : []);
+    } catch (err: any) {
+      console.error("Error fetching accounts:", err.response?.data || err.message);
       setTransactionError("Failed to load accounts");
     } finally {
       setLoading(false);
     }
-  };
-
+  }; 
+  
   const handleCreateBudget = async () => {
     setError("");
     try {
@@ -111,8 +115,8 @@ const Budget: React.FC = () => {
       });
 
       alert(response.data.message || "Budget created successfully!");
-      fetchBudgets(); // Refresh the budget list
-      setNewBudget({ id: "", categoryId: "", amount: 0, accountId: "", accountType: "" }); // Reset form
+      fetchBudgets();
+      setNewBudget({ id: "", categoryId: "", amount: 0, accountId: "", accountType: "" });
     } catch (err) {
       console.error("Error creating budget:", err);
       setError("Failed to create budget");
@@ -130,7 +134,7 @@ const Budget: React.FC = () => {
       });
 
       alert("Budget deleted successfully!");
-      fetchBudgets(); // Refresh the budget list
+      fetchBudgets();
     } catch (err) {
       console.error("Error deleting budget:", err);
       setError("Failed to delete budget");
