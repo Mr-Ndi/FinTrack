@@ -97,13 +97,7 @@ const Category: React.FC = () => {
             onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
             className="category-input"
           />
-          {/* <input
-            type="text"
-            placeholder="Parent ID (optional)"
-            value={newCategory.parentId}
-            onChange={(e) => setNewCategory({ ...newCategory, parentId: e.target.value })}
-            className="category-input"
-          /> */}
+
           <button onClick={handleCreateCategory} className="category-button">
             Create Category
           </button>
@@ -120,10 +114,9 @@ const Category: React.FC = () => {
           <ul>
             {categories.map((category) => (
               <li key={category.id} className="categories-list-item">
-                {/* <div>
+                { <div>
                   <span>{category.name}</span>
-                  {category.parentId && <span> (Parent ID: {category.parentId})</span>}
-                </div> */}
+                </div> }
                 <button onClick={() => handleDeleteCategory(category.id)} className="delete-button category-button">
                   Delete
                 </button>

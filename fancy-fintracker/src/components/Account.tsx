@@ -41,15 +41,15 @@ const Account: React.FC = () => {
         throw new Error("No token found. Please log in.");
       }
   
-      console.log("Fetching accounts...");
+      // console.log("Fetching accounts...");
       const response = await axiosInstance.get("/accounts", {
         headers: { Authorization: `Bearer ${token}` },
       });
   
-      console.log("Full Accounts API response:", response.data);
+      // console.log("Full Accounts API response:", response.data);
     
       const accountData = Array.isArray(response.data.account) ? response.data.account : [];
-      console.log("Parsed account data:", accountData);
+      // console.log("Parsed account data:", accountData);
       setAccounts(accountData);
     } catch (err: any) {
       if (axios.isAxiosError(err)) {
@@ -104,7 +104,7 @@ const Account: React.FC = () => {
   const handleDeleteAccount = async (accountId: string) => {
     setError("");
 
-    console.log("Deleting account with ID:", accountId);
+    // console.log("Deleting account with ID:", accountId);
 
     if (!accountId) {
       console.error("Error: accountId is undefined");

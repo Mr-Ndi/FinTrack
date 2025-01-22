@@ -87,10 +87,10 @@ const Dashboard = () => {
               headers: { Authorization: `Bearer ${token}` },
             });
         
-            console.log("Accounts API response:", response.data);
+            // console.log("Accounts API response:", response.data);
         
             const accountData = response.data.account || [];
-            console.log("Parsed Account Data:", accountData);
+            // console.log("Parsed Account Data:", accountData);
         
             if (Array.isArray(accountData)) {
               setAccounts(mapAccountData(accountData));
@@ -141,8 +141,8 @@ const Dashboard = () => {
             transactions.length > 0 ? (
             <ul>
                 {transactions.map((transaction) => {
-                console.log("Transaction:", transaction); // Debugging the whole transaction object
-                console.log("Category:", transaction.category); // Debugging the category array
+                // console.log("Transaction:", transaction); // Debugging the whole transaction object
+                // console.log("Category:", transaction.category); // Debugging the category array
 
                 return (
                     <li key={transaction.id}>
@@ -162,13 +162,7 @@ const Dashboard = () => {
             <p>No transactions available.</p>
             )
         )}
-        </section>
-
-
-
-
-
-        
+        </section>        
           <section className="management-links">
             <h3>Manage</h3>
             <ul>
