@@ -51,66 +51,94 @@ export const transact = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
+type ReportParams = {
+    transactionDate1: string;
+    transactionDate2: string;
+};
 
-export const report = async(req: Request, res: Response): Promise <void>=>{
-    const { initial, final } = req.body;
-    const token = req.headers['authorization'];
+export const report = async (req: Request<ReportParams>, res: Response): Promise<void> => {
+    const { transactionDate1, transactionDate2 } = req.params;
+    const token = req.headers["authorization"];
 
-    if (!initial || !final) {
+    if (!transactionDate1 || !transactionDate2) {
         res.status(400).json({
-            "message": "All date required",
-            "status": 400
-        })
-    
-        if(!token){
-            res.status(401).json({
-                "message": "Authorization token is required",
-                "status": 401
-            })
-        }
-
-        try {
-            const message = await transaction.getHistory(initial, final)
-            res.status(200).json({
-                "meaasge": "Historical report generated successfully",
-                "status": 200,
-                "datum": message
-            })
-        } catch (error: any) {
-            console.error('Error getting transaction history:', error.message);
-        }
-    }
-}
-
-export const AccountReport = async(req: Request, res:Response): Promise <void> =>{
-    const accountType = req.body.accountType;
-    const token = req.headers['authorization']
-
-    if (!accountType) {
-        res.status(400).json({
-            "message": "Account type required",
-            "status": 400
-        })
+            message: "Both transaction dates are required",
+            status: 400,
+        });
+        return;
     }
 
-    if(!token){
+    if (!token) {
         res.status(401).json({
-            "message": "Authorization token is required",
-            "status": 401
-        })
+            message: "Authorization token is required",
+            status: 401,
+        });
+        return;
+    }
+
+    const date1 = new Date(transactionDate1);
+    const date2 = new Date(transactionDate2);
+
+    if (isNaN(date1.getTime()) || isNaN(date2.getTime())) {
+        res.status(400).json({
+            message: "Invalid date format",
+            status: 400,
+        });
+        return;
     }
 
     try {
-        const answer = await transaction.accountHistory(accountType)
+
+        const message = await transaction.getHistory(date1, date2)
         res.status(200).json({
-            "message": "Historical report generated successfully",
-            "status": 200,
-            "datum": answer
-        })
+            message: "Historical report generated successfully",
+            status: 200,
+            datum: message,
+        });
     } catch (error: any) {
-        console.error('Error getting transaction history:', error.message);
+        console.error("Error getting transaction history:", error.message);
+        res.status(500).json({
+            message: "Internal server error",
+            status: 500,
+        });
     }
-}
+};
+
+export const AccountReport = async (req: Request, res: Response): Promise<void> => {
+    const { accountType } = req.params;
+    const token = req.headers['authorization'];
+
+    if (!accountType) {
+        res.status(400).json({
+            message: "Account type required",
+            status: 400,
+        });
+        return;
+    }
+
+    if (!token) {
+        res.status(401).json({
+            message: "Authorization token is required",
+            status: 401,
+        });
+        return;
+    }
+
+    try {
+        const answer = await transaction.accountHistory(accountType);
+        res.status(200).json({
+            message: "Historical report generated successfully",
+            status: 200,
+            datum: answer,
+        });
+    } catch (error: any) {
+        console.error("Error getting transaction history:", error.message);
+        res.status(500).json({
+            message: "Internal server error",
+            status: 500,
+        });
+    }
+};
 
 export const wholereport = async(req: Request, res: Response): Promise <void> =>{
     const token = req.headers['authorization']
