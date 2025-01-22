@@ -26,8 +26,9 @@ body {
 }
 
 .dashboard-right {
-  flex-basis: 300px;
-  padding: 20px; 
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-start;
 }
 
 .accounts, .transactions, .management-links {
