@@ -6,7 +6,7 @@ FinTrack is a web-based financial management application designed to help users 
 ## Project Structure
 This repository contains both backend and frontend code organized into separate directories:
 
-- **/backend**: Contains the server-side code, including APIs and database management.
+- **/backend**: Contains the server-side code, including APIs and database management. **Prisma ORM** is used for seamless database interaction.
 - **/fancy-fintracker**: Contains the client-side code, including user interfaces and interactions.
 
 ## Features
@@ -29,8 +29,8 @@ This repository contains both backend and frontend code organized into separate 
 
 ## Hosted Services
 - **Backend**:
-  - Database: PostgreSQL, hosted on [Neon](https://neon.tech/)
-  - API Server: Hosted on [Render](https://render.com/)
+  - **Database**: PostgreSQL, hosted on [Neon](https://neon.tech/), with **Prisma ORM** for database management.
+  - **API Server**: Hosted on [Render](https://render.com/)
 - **Frontend**:
   - Client application hosted on [Vercel](https://vercel.com/)
 
@@ -88,7 +88,6 @@ This repository contains both backend and frontend code organized into separate 
 2. Link your financial accounts (bank, mobile money, cash, etc.).
 3. Track transactions, set budgets, and generate reports.
 4. Visualize your financial data for better decision-making.
-
 
 ### Example Use Case
 Eric, an employee of Code of Africa GmbH, struggles to manage income and expenses across various accounts such as bank accounts, mobile money, and cash. Using FinTrack, he can:
