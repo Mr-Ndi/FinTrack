@@ -4,7 +4,7 @@ import "./Dashboard.css";
 import Account from "../account/Account";
 import Transaction from "../transaction/Transaction";
 import Budget from "../budget/Budget";
-import Category from "../../components/Category";
+import Category from "../../pages/category/Category"
 import BudgetGraph from "../graphs/Graph";
 
 interface CategoryInterface {
