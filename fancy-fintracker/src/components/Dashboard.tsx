@@ -5,7 +5,7 @@ import Account from "./Account";
 import Transaction from "./Transaction";
 import Budget from "./Budget";
 import Category from "./Category";
-import BudgetGraph from "./BudgetGraph";
+import BudgetGraph from "./Graph";
 
 interface CategoryInterface {
     id: string;
