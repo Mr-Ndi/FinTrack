@@ -133,36 +133,30 @@ const Dashboard = () => {
               )
             )}
           </section>
-        <section className="transactions">
-        <h3>Recent Transactions</h3>
-        {loading.transactions ? (
-            <p>Loading transactions...</p>
-        ) : (
-            transactions.length > 0 ? (
-            <ul>
-                {transactions.map((transaction) => {
-                // console.log("Transaction:", transaction); // Debugging the whole transaction object
-                // console.log("Category:", transaction.category); // Debugging the category array
-
-                return (
-                    <li key={transaction.id}>
-                    <span>{transaction.date}</span>
-                    {/* Extracting the category name */}
-                    <span>
-                        {transaction.category && transaction.category.length > 0
-                        ? transaction.category[0].name // Accessing the category name
-                        : 'No Category'}
-                    </span>
-                    <span>{transaction.type === "income" ? "+" : "-"}${transaction.amount}</span>
-                    </li>
-                );
-                })}
-            </ul>
+          <section className="transactions">
+            <h3>Recent Transactions</h3>
+            {loading.transactions ? (
+              <p>Loading transactions...</p>
             ) : (
-            <p>No transactions available.</p>
-            )
-        )}
-        </section>        
+              transactions.length > 0 ? (
+                <ul>
+                  {transactions.slice(0, 2).map((transaction) => (
+                    <li key={transaction.id}>
+                      <span>{transaction.date}</span>
+                      <span>
+                        {transaction.category && transaction.category.length > 0
+                          ? transaction.category[0].name
+                          : "No Category"}
+                      </span>
+                      <span>{transaction.type === "income" ? "+" : "-"}${transaction.amount}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No transactions available.</p>
+              )
+            )}
+          </section>
           <section className="management-links">
             <h3>Manage</h3>
             <ul>
