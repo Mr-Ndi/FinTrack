@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axiosInstance from "../api/axios";
+import axiosInstance from "../../api/axios";
 import "./Transaction.css";
 
 interface Category {

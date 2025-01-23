@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import axios from "../api/axios";
+import axios from "../../api/axios";
 import "./Dashboard.css";
-import Account from "./Account";
-import Transaction from "./Transaction";
-import Budget from "./Budget";
-import Category from "./Category";
-import BudgetGraph from "./Graph";
+import Account from "../account/Account";
+import Transaction from "../transaction/Transaction";
+import Budget from "../budget/Budget";
+import Category from "../../components/Category";
+import BudgetGraph from "../graphs/Graph";
 
 interface CategoryInterface {
     id: string;
